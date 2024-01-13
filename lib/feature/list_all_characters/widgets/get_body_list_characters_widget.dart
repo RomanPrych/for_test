@@ -48,6 +48,7 @@ class GetBodyListCharactersWidget extends StatelessWidget {
                 e,
                 0xFF6A4DBA,
                 true,
+                searchText: stateThis.data.controller.text,
               ))
           .toList();
       if (stateThis.data.isLoadingListPersonsFromSearch) {

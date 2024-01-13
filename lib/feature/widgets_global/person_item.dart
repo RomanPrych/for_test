@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:for_test/common/extensions/sized_box_extension.dart';
 import 'package:for_test/common/navigation/navigation.dart';
 import 'package:for_test/common/theme/app_theme.dart';
+import 'package:for_test/common/utils/highlight_text.dart';
 import 'package:for_test/data/models/person_model.dart';
 import 'package:for_test/feature/widgets_global/photo_widget.dart';
 
@@ -10,12 +11,14 @@ class PersonItem extends StatelessWidget {
     this.model,
     this.color,
     this.isOval, {
+    this.searchText,
     super.key,
   });
 
   final PersonModel? model;
   final bool isOval;
   final int color;
+  final String? searchText;
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +45,37 @@ class PersonItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   10.0.hsb,
-                  Text(
-                    model?.name ?? 'No name',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: AppTheme.whiteColor,
-                          fontSize: 16,
-                        ),
-                  ),
+                  if (searchText != null)
+                    RichText(
+                      text: TextSpan(
+                          children: HighlightText().highlight(
+                              source: "${model?.name}",
+                              query: '$searchText',
+                              styleSource: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                        color: AppTheme.whiteColor,
+                                        fontSize: 16,
+                                      ) ??
+                                  const TextStyle(),
+                              styleQuery: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                        color: AppTheme.errorRedColor,
+                                        fontSize: 16,
+                                      ) ??
+                                  const TextStyle())),
+                    ),
+                  if (searchText == null)
+                    Text(
+                      model?.name ?? 'No name',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: AppTheme.whiteColor,
+                            fontSize: 16,
+                          ),
+                    ),
                   2.0.hsb,
                   Text(
                     '${model?.status} - ${model?.species}',
