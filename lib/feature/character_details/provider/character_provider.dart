@@ -5,6 +5,7 @@ import 'package:for_test/feature/character_details/use_case_character/get_charac
 
 class CharacterProvider extends ChangeNotifier {
   CharacterProvider(this.id) {
+    //this method starts when we open person page
     init();
   }
 
@@ -14,22 +15,30 @@ class CharacterProvider extends ChangeNotifier {
       locator.get<GetCharacterUseCase>();
 
   Future<void> init() async {
+    //we show loading
     setLoading(true);
     var result = await getCharacterUseCase.call(GetPersonParams(id));
-    result.fold((l) => error(l.toString()), (r) {
-      state.titleText = r?.name ?? '';
-      state.model = r;
-      setLoading(false);
-    });
+    result.fold(
+      //if it is error we call method [error] and give it error text
+      (l) => error(l.toString()),
+      (r) {
+        //if it is ok we show person name in appbar and display person in page and remove loading
+        state.titleText = r?.name ?? '';
+        state.model = r;
+        setLoading(false);
+      },
+    );
   }
 
   void error(String value) {
+    //if error - we show error text
     state.isError = true;
     state.errorText = value;
     notifyListeners();
   }
 
   void setLoading(bool value) {
+    //add and remove loading when we need
     state.isLoading = value;
     notifyListeners();
   }
